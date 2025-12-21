@@ -335,10 +335,3 @@ def fwqm(flux, wavelength, line):
         l_left = max(list(filter(lambda x: x < ha_wv_ind, points)))
         l_right = min(list(filter(lambda x: x > ha_wv_ind, points)))
         return np.abs(xs[l_left]-xs[l_right]).item()
-
-
-### do not include the version of mass clasification--can be modified by the user later###
-
-
-
-
