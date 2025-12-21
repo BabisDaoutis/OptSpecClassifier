@@ -1,1 +1,30 @@
 # OptSpecClassifier
+
+An automated activity classification tool for optical galaxy spectra - decomposing galaxy activity
+
+A SVM-based, 3-dimensional galaxy activity classifier for optical spectra
+
+Repository for galaxy activity classifier presented in the paper: "An automated activity classification tool for optical galaxy spectra"\
+Astronomy & Astrophysics\
+ArXiv: TBD \
+ADS: TBD \
+Publisher (A&A): TBD
+
+**Authors:**\
+C. Daoutis, A. Zezas, E. Kyritsis, K. Kouroumpatzakis, and P. Bonfini
+
+### Abstract 
+**Context.** Reliable and versatile galaxy activity diagnostic tools are indispensable for comprehending the physical processes that drive galaxy evolution. Traditional methodologies frequently necessitate extensive preprocessing, such as starlight subtraction and emission line deblending (e.g., Hα and [N II]), which can introduce substantial biases and uncertainties due to their model-dependent nature. Additionally, numerous diagnostics omit the inclusion of dormant (passive) galaxies. \
+**Aims.** This work aims to develop a reliable, automated, and efficient diagnostic tool capable of distinguishing between star-forming, active galactic nuclei (AGN), low-ionization nuclear emission-line regions (LINERs), composite, and passive galaxies under one unified scheme. \
+**Methods.** We developed a diagnostic tool based on a support vector machine trained on ground truth data originating from optical emission-line ratios and color selection criteria. Building upon previous literature findings and exploring various combinations of discriminatory feature schemes, we identified the equivalent widths (EWs) of Hβ, [O III]λ5007, and Hα+[N II]λλ6548,84 as key discriminatory features. Additionally, galaxies classified as AGN can be distinguished into broad and narrow line AGN by measuring the full quarter at the half-maximum of Hα and [N II] complex. \
+**Results.**  Employing machine learning algorithms and three EWs directly measured from the galaxy’s optical spectrum, we have developed a diagnostic tool that encompasses all potential activities of galaxies while simultaneously achieving high performance scores across all of them. Our diagnostic achieves overall accuracy of ~83% and recall of ~79% for star forming, ~94% for AGN, ~85% for LINER, ~77% for composite, and ~96% for passive galaxies.\
+**Conclusions.** Our diagnostic tool offers a substantial enhancement over the existing galaxy activity diagnostics as it can be applied to a broad number of spectra, eliminates the requirement for preprocessing (i.e., starlight subtraction or flux calibration) of the spectra and spectral line deblending, encompasses all activity classes under one unified scheme, and offers the ability to distinguish between the two main types of AGN. In addition, the omission of starlight subtraction was not found to be a significant detriment to diagnostic's performance. Furthermore, its narrow wavelength requirement for its application enables its use to a large number of galaxy samples, making it highly relevant to the activity studies of galaxies observed at high redshifts such as the James Webb Space Telescope (JWST).
+
+### Application of the model
+
+This repository contains all essential files, including a Jupyter notebook demonstration. The pre-trained SVM model, '.sav', implements the algorithm detailed in the referenced paper. We have included 'test_sample_galaxies.csv' for verification purposes.
+
+- **Output of classifier**\
+Once the model has been applied to a galaxy spectrum, the output can be [...]. \
+**Classification legend** \
+  
