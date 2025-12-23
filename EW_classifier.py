@@ -156,63 +156,65 @@ def rf_classify_mc(wavelength, flux, sigma, clf, scaler_sv, plot, n_mc=100):
       {0: 'SF', 1: 'AGN', 2: 'LINER', 3: 'COMP', 4: 'PAS'}.
     - The specific lines measured are H-alpha (6566 A), [OIII] (5007 A), and H-beta (4864 A).
     """
-    EWs = []
-    EWs_unc = []
+    lines = [
+            {'center': 6566, 'width': 80, 'cont': 10}, # H-alpha
+            {'center': 5007, 'width': 30, 'cont': 10}, # [OIII]
+            {'center': 4864, 'width': 30, 'cont': 10}  # H-beta
+        ]
+    
+    results = [calc_eqw_mc(wavelength, flux, sigma, l['center'], l['width'], l['cont'], mc_iter=100) for l in lines]
+  
+    EWs = [res[0] for res in results]
+    EWs_unc = [res[1] for res in results]
 
-    line_center_ha, line_center_oiii, line_center_hb = 6566, 5007, 4864
-    line_width_ha, line_width_oiii, line_width_hb = 80, 30, 30
-    cont_width_ha, cont_width_oiii, cont_width_hb = 10, 10, 10
-
-    EWs.append(calc_eqw_mc(wavelength, flux, sigma, line_center_ha, line_width_ha, cont_width_ha, mc_iter=100)[0])
-    EWs.append(calc_eqw_mc(wavelength, flux, sigma, line_center_oiii, line_width_oiii, cont_width_oiii, mc_iter=100)[0])
-    EWs.append(calc_eqw_mc(wavelength, flux, sigma, line_center_hb, line_width_hb, cont_width_hb, mc_iter=100)[0])
-
-    EWs_unc.append(calc_eqw_mc(wavelength, flux, sigma, line_center_ha, line_width_ha, cont_width_ha, mc_iter=100)[1])
-    EWs_unc.append(calc_eqw_mc(wavelength, flux, sigma, line_center_oiii, line_width_oiii, cont_width_oiii, mc_iter=100)[1])
-    EWs_unc.append(calc_eqw_mc(wavelength, flux, sigma, line_center_hb, line_width_hb, cont_width_hb, mc_iter=100)[1])
-
-    df = pd.DataFrame(columns=['mc_class','EW_NII_HA_NII_NON','OIII_5007_EQW_NON','H_BETA_EQW_NON'])
-    df['EW_NII_HA_NII_NON'] = np.random.normal(loc=EWs[0], scale=EWs_unc[0],size=n_mc)
-    df['OIII_5007_EQW_NON'] = np.random.normal(loc=EWs[1], scale=EWs_unc[1],size=n_mc)
-    df['H_BETA_EQW_NON'] = np.random.normal(loc=EWs[2], scale=EWs_unc[2],size=n_mc)
+    df = pd.DataFrame()
+    df['EW_NII_HA_NII_NON'] = np.random.normal(loc=EWs[0], scale=EWs_unc[0], size=n_mc)
+    df['OIII_5007_EQW_NON'] = np.random.normal(loc=EWs[1], scale=EWs_unc[1], size=n_mc)
+    df['H_BETA_EQW_NON'] = np.random.normal(loc=EWs[2], scale=EWs_unc[2], size=n_mc)
+    
+    features = df[["EW_NII_HA_NII_NON", "OIII_5007_EQW_NON", "H_BETA_EQW_NON"]]
+    
+    X_scaled = scaler_sv.transform(features)
+    
+    df['mc_class'] = clf.predict(X_scaled)
+    probs = clf.predict_proba(X_scaled)
     
     classes = ['SF', 'AGN', 'LINER', 'COMP', 'PAS']
-    features = df[["EW_NII_HA_NII_NON", "OIII_5007_EQW_NON", "H_BETA_EQW_NON"]]
-
-    df['mc_class'] = clf.predict(scaler_sv.transform(features))
-    probs = clf.predict_proba(scaler_sv.transform(features))
-    prob_df = pd.DataFrame(probs, columns=[f'mc_proba_{class_name}' for class_name in classes])
+    
+    prob_cols = [f'mc_proba_{c}' for c in classes]
+    prob_df = pd.DataFrame(probs, columns=prob_cols)
     df = df.join(prob_df)
 
     class_mapping = {0: 'SF', 1: 'AGN', 2: 'LINER', 3: 'COMP', 4: 'PAS'}
-    
     class_counts = df['mc_class'].value_counts()
-    class_counts_ordered = pd.Series({class_mapping[i]: class_counts.get(i, 0) for i in class_mapping})
-    labels = [class_mapping[i] for i in class_mapping]
     
-    mean_probabilities = df[['mc_proba_SF', 'mc_proba_AGN', 'mc_proba_LINER', 'mc_proba_COMP', 'mc_proba_PAS']].mean(axis=0)
-    std_probabilities = df[['mc_proba_SF', 'mc_proba_AGN', 'mc_proba_LINER', 'mc_proba_COMP', 'mc_proba_PAS']].std(axis=0)
+    class_counts_ordered = pd.Series({label: class_counts.get(i, 0) for i, label in class_mapping.items()})
+ 
+    mean_probabilities = df[prob_cols].mean(axis=0)
+    std_probabilities = df[prob_cols].std(axis=0)
 
-    if plot == True:
+    majority_class = class_counts_ordered.idxmax()
+
+    if plot:
         fig, ax = plt.subplots(1, 2, figsize=(14, 6))
-        ax[0].bar(labels, class_counts_ordered[labels], color='b', edgecolor='black')
-        ax[0].set_xlabel('Class', fontsize=18)
+        
+        ax[0].bar(class_counts_ordered.index, class_counts_ordered.values, color='b', edgecolor='black')
+        ax[0].set_title('Distribution of Predicted Classes', fontsize=18)
         ax[0].set_ylabel('Counts', fontsize=18)
-        ax[0].set_title('Distribution of Classes', fontsize=18)
-        ax[0].tick_params(axis='x', rotation=0, labelsize=18)
-        ax[0].tick_params(axis='y', labelsize=18)
+        ax[0].tick_params(labelsize=14)
 
-        ax[1].bar(classes, mean_probabilities, yerr=std_probabilities, capsize=5, alpha=0.7, color='g', ecolor='black')
-        ax[1].set_xlabel('Class', fontsize=18)
-        ax[1].set_ylabel('Mean Probability', fontsize=18)
-        ax[1].set_title('Distribution of Mean Probabilities', fontsize=18)
-        ax[1].tick_params(axis='x', labelsize=18)
-        ax[1].tick_params(axis='y', labelsize=18)
+        mean_probabilities.index = classes 
+        ax[1].bar(classes, mean_probabilities, yerr=std_probabilities, capsize=5, 
+                  alpha=0.7, color='g', ecolor='black')
+        ax[1].set_title('Mean Class Probabilities', fontsize=18)
+        ax[1].set_ylim(bottom=0, top=1.05)
+        ax[1].tick_params(labelsize=14)
 
-        ax[1].set_ylim(bottom=0)
         plt.tight_layout()
         plt.show()
-    else: return max(class_counts_ordered.index, key=lambda x: class_counts_ordered[x]), mean_probabilities, std_probabilities
+        return None
+    else:
+        return majority_class, mean_probabilities, std_probabilities
 
 def peak_flux(data, window_size):
     """
@@ -315,7 +317,7 @@ def fwqm(flux, wavelength, line):
     cnt = continuum(wavelength_trc, flux_trc, line_center, line_width, cont_width, line_center)
     pk = peak_flux(y, window_size)
     fwqm = (pk + 3*cnt)/4.
-    plt.plot(wavelength_trc, flux_trc)
+    # plt.plot(wavelength_trc, flux_trc)
 
     spl1 = PchipInterpolator(wavelength_trc, flux_trc)
     xs = np.linspace(min(wavelength_trc), max(wavelength_trc),1000)
@@ -335,3 +337,4 @@ def fwqm(flux, wavelength, line):
         l_left = max(list(filter(lambda x: x < ha_wv_ind, points)))
         l_right = min(list(filter(lambda x: x > ha_wv_ind, points)))
         return np.abs(xs[l_left]-xs[l_right]).item()
+
