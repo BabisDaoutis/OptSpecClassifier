@@ -27,13 +27,15 @@ Output of classifier
 Once the model has been applied to a galaxy spectrum, the output is probabilistic. Instead of a single label, the classifier provides a full probability distribution across all classes based on Monte Carlo simulations. This includes:
 Mean Probability: The average likelihood that the spectrum belongs to a specific class.
 Standard Deviation: The uncertainty associated with that prediction, reflecting the noise in the spectral measurements.
-For objects classified as AGN, the pipeline performs an additional kinematic check (measuring FWQM of Hα) to distinguish between Broad Line and Narrow Line AGN.
-Classification legend The model distinguishes between the following spectral classes:
-SF: Star-Forming Galaxies
-AGN: Active Galactic Nuclei (Seyfert)
-LINER: Low-Ionization Nuclear Emission-line Regions
-COMP: Composite
-PAS: Passive Galaxies (Quiescent)
+For objects classified as AGN, the pipeline performs an additional kinematic check (measuring FWQM of Hα) to distinguish between Broad Line and Narrow Line AGN.\
+\
+Classification legend:\
+The model distinguishes between the following spectral classes:\
+SF: Star-Forming Galaxies\
+AGN: Active Galactic Nuclei (Seyfert)\
+LINER: Low-Ionization Nuclear Emission-line Region\
+COMP: Composite\
+PAS: Passive Galaxies (Quiescent)\
 
 ## Installation & Setup
 
