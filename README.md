@@ -75,7 +75,7 @@ Ensure you have **Anaconda** or **Miniconda** installed on your system. If not, 
     conda list
     ```
 
-    **Option 2:**
+**Option 2:**
 In case there are issues running the *environment.yml*, you can run the following commands in a terminal one by one:
 
 ```
