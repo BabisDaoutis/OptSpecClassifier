@@ -23,8 +23,51 @@ C. Daoutis, A. Zezas, E. Kyritsis, K. Kouroumpatzakis, and P. Bonfini
 ### Application of the model
 
 This repository contains all essential files, including a Jupyter notebook demonstration. The pre-trained SVM model, '.sav', implements the algorithm detailed in the referenced paper. We have included 'test_sample_galaxies.csv' for verification purposes.
+Output of classifier
+Once the model has been applied to a galaxy spectrum, the output is probabilistic. Instead of a single label, the classifier provides a full probability distribution across all classes based on Monte Carlo simulations. This includes:
+Mean Probability: The average likelihood that the spectrum belongs to a specific class.
+Standard Deviation: The uncertainty associated with that prediction, reflecting the noise in the spectral measurements.
+For objects classified as AGN, the pipeline performs an additional kinematic check (measuring FWQM of Hα) to distinguish between Broad Line and Narrow Line AGN.
+Classification legend The model distinguishes between the following spectral classes:
+SF: Star-Forming Galaxies
+AGN: Active Galactic Nuclei (Seyfert)
+LINER: Low-Ionization Nuclear Emission-line Regions
+COMP: Composite
+PAS: Passive Galaxies (Quiescent)
 
-- **Output of classifier**\
-Once the model has been applied to a galaxy spectrum, the output can be [...]. \
-**Classification legend** \
-  
+## Installation & Setup
+
+This project requires a specific Python environment to run correctly. We use **Conda** to manage dependencies.
+
+### Prerequisites
+Ensure you have **Anaconda** or **Miniconda** installed on your system. If not, you can download [Miniconda here](https://docs.conda.io/en/latest/miniconda.html).
+
+### Setting up the Environment
+
+1.  **Clone the repository**:
+    ```bash
+    cd <your-install-dir>
+    ```
+    ```
+    git clone https://github.com/BabisDaoutis/OptSpecClassifier.git
+    ```
+    ```
+    cd OptSpecClassifier
+    ```
+
+3.  **Create the Conda environment:**
+    Run the following command to install Python 3.13.2 and all required libraries (Astropy, Matplotlib, Pandas, etc.) as defined in `environment.yml`:
+    ```bash
+    conda env create -f environment.yml
+    ```
+
+4.  **Activate the environment:**
+    ```bash
+    conda activate OptSpecClassifier
+    ```
+
+5.  **Verify installation (Optional):**
+    You can ensure all packages are installed correctly by running:
+    ```bash
+    conda list
+    ```  
