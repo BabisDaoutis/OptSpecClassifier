@@ -89,8 +89,6 @@ conda install astropy=7.0.1
 conda install matplotlib=3.10.1
 conda install pandas=2.2.3
 conda install scipy=1.15.2
-conda install seaborn=0.13.2
 conda install joblib=1.4.2
-conda install tqdm=4.67.1
 conda install jupyter notebook
 ```
