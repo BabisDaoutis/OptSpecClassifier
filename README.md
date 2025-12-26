@@ -37,6 +37,9 @@ PAS: Passive Galaxies (Quiescent)
 
 ## Installation & Setup
 
+   **Option 1:**
+Run the *environment.yml* file:
+
 This project requires a specific Python environment to run correctly. We use **Conda** to manage dependencies.
 
 ### Prerequisites
@@ -70,4 +73,22 @@ Ensure you have **Anaconda** or **Miniconda** installed on your system. If not, 
     You can ensure all packages are installed correctly by running:
     ```bash
     conda list
-    ```  
+    ```
+
+    **Option 2:**
+In case there are issues running the *environment.yml*, you can run the following commands in a terminal one by one:
+
+```
+conda create --name DONHaclassifier python=3.13.2
+conda activate DONHaclassifier
+conda install scikit-learn=1.6.1
+conda install numpy=2.2.4
+conda install astropy=7.0.1
+conda install matplotlib=3.10.1
+conda install pandas=2.2.3
+conda install scipy=1.15.2
+conda install seaborn=0.13.2
+conda install joblib=1.4.2
+conda install tqdm=4.67.1
+conda install jupyter notebook
+```
