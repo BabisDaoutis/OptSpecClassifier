@@ -2,11 +2,9 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from tqdm.auto import tqdm
 from scipy.interpolate import CubicSpline, PchipInterpolator
 from scipy.optimize import curve_fit
 from scipy.integrate import trapezoid
-from sklearn import metrics
 
 def calc_flux_stats(wavelength, flux, a, b):
     """Calculate the median and standard deviation of the flux of a spectrum over a specified interval.
