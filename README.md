@@ -35,7 +35,7 @@ SF: Star-Forming Galaxies\
 AGN: Active Galactic Nuclei (Seyfert)\
 LINER: Low-Ionization Nuclear Emission-line Region\
 COMP: Composite\
-PAS: Passive Galaxies (Quiescent)\
+PAS: Passive Galaxies (Quiescent)
 
 ## Installation & Setup
 
