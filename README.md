@@ -48,7 +48,7 @@ The pipeline generates a dual-layer classification result:
 
 **Output Example:**
 
-![Diagnostic Output Preview](path/to/your/image.png)
+![Diagnostic Output Preview](Notebooks/Images/output.png)
 
 
 ## Installation & Setup
