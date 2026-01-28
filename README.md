@@ -37,6 +37,20 @@ LINER: Low-Ionization Nuclear Emission-line Region\
 COMP: Composite\
 PAS: Passive Galaxies (Quiescent)
 
+## Implementation & Usage
+
+The `notebooks/` directory contains a comprehensive walkthrough demonstrating how to apply this diagnostic tool to your spectral data. The notebook provides step-by-step instructions for data ingestion, preprocessing, and model execution.
+
+#### Diagnostic Output
+The pipeline generates a dual-layer classification result:
+* **Majority Vote:** The final predicted class based on model consensus.
+* **Class Probabilities:** A detailed breakdown of the predicted probability for each available class, indicating the model's confidence level.
+
+**Output Example:**
+
+![Diagnostic Output Preview](path/to/your/image.png)
+
+
 ## Installation & Setup
 
    **Option 1:**
