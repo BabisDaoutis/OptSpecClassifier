@@ -90,6 +90,12 @@ Ensure you have **Anaconda** or **Miniconda** installed on your system. If not, 
     ```bash
     conda list
     ```
+6. Install in the invironment (Optional):
+   ```bash
+   pip install -e .
+   ```
+    We recommend installing the package in editable mode via ```pip install -e .```. This registers the project within your Python environment, enabling you to import it
+   globally from any directory without the need to manually copy or duplicate source files.
 
 **Option 2:**
 In case there are issues running the *environment.yml*, you can run the following commands in a terminal one by one:
