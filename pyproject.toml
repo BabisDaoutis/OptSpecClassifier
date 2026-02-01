@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "learn_git_hub"
+version = "0.1.0"
+description = "Galaxy activity classifier"
+dependencies = [
+    "scikit-learn",
+    "numpy",
+    "astropy",
+    "matplotlib",
+    "pandas",
+    "scipy",
+    "joblib"
+]
+
+[tool.setuptools]
+py-modules = ["EW_classifier"]
