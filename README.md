@@ -90,7 +90,7 @@ Ensure you have **Anaconda** or **Miniconda** installed on your system. If not, 
     ```bash
     conda list
     ```
-6. Install in the invironment (Optional):
+6. Install in the environment (Optional):
    ```bash
    pip install -e .
    ```
