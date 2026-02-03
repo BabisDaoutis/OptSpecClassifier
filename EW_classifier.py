@@ -338,7 +338,7 @@ def fwqm(flux, wavelength, line):
     -------
     float
         The Full Width at Quarter Maximum (FWQM) in the same units as the 
-        input wavelength (typically Angstroms). Returns 0.0 if the width 
+        input wavelength (in Angstroms). Returns 0.0 if the width 
         cannot be determined (e.g., edges not found).
 
     Raises
