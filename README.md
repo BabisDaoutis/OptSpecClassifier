@@ -6,8 +6,8 @@ A SVM-based, 3-dimensional galaxy activity classifier for optical spectra
 
 Repository for galaxy activity classifier presented in the paper: "An automated activity classification tool for optical galaxy spectra"\
 Astronomy & Astrophysics\
-ArXiv: TBD \
-ADS: TBD \
+ArXiv: https://arxiv.org/abs/2602.20343 \
+ADS: https://ui.adsabs.harvard.edu/abs/2026arXiv260220343D/abstract \
 Publisher (A&A): TBD
 
 **Authors:**\
