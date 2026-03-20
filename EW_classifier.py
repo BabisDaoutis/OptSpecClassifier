@@ -108,7 +108,7 @@ def calc_eqw_mc(wavelength, flux, sigma, line_center, line_width, cont_width, mc
     ew  = np.array(ew)
     return np.mean(ew).item(), np.std(ew).item()
 
-def rf_classify_mc(wavelength, flux, sigma, clf, scaler_sv, plot, n_mc=100):
+def rf_classify_mc_spectra(wavelength, flux, sigma, clf, scaler_sv, plot=False, n_mc=100):
     """
     Performs Monte Carlo spectral classification using a Support Vector Machine classifier based on 
     emission line Equivalent Widths (EWs).
@@ -163,6 +163,99 @@ def rf_classify_mc(wavelength, flux, sigma, clf, scaler_sv, plot, n_mc=100):
   
     EWs = [res[0] for res in results]
     EWs_unc = [res[1] for res in results]
+
+    df = pd.DataFrame()
+    df['EW_NII_HA_NII_NON'] = np.random.normal(loc=EWs[0], scale=EWs_unc[0], size=n_mc)
+    df['OIII_5007_EQW_NON'] = np.random.normal(loc=EWs[1], scale=EWs_unc[1], size=n_mc)
+    df['H_BETA_EQW_NON'] = np.random.normal(loc=EWs[2], scale=EWs_unc[2], size=n_mc)
+    
+    features = df[["EW_NII_HA_NII_NON", "OIII_5007_EQW_NON", "H_BETA_EQW_NON"]]
+    
+    X_scaled = scaler_sv.transform(features)
+    
+    df['mc_class'] = clf.predict(X_scaled)
+    probs = clf.predict_proba(X_scaled)
+    
+    classes = ['SF', 'AGN', 'LINER', 'COMP', 'PAS']
+    
+    prob_cols = [f'mc_proba_{c}' for c in classes]
+    prob_df = pd.DataFrame(probs, columns=prob_cols)
+    df = df.join(prob_df)
+
+    class_mapping = {0: 'SF', 1: 'AGN', 2: 'LINER', 3: 'COMP', 4: 'PAS'}
+    class_counts = df['mc_class'].value_counts()
+    
+    class_counts_ordered = pd.Series({label: class_counts.get(i, 0) for i, label in class_mapping.items()})
+ 
+    mean_probabilities = df[prob_cols].mean(axis=0)
+    std_probabilities = df[prob_cols].std(axis=0)
+
+    majority_class = class_counts_ordered.idxmax()
+
+    if plot:
+        fig, ax = plt.subplots(1, 2, figsize=(14, 6))
+        
+        ax[0].bar(class_counts_ordered.index, class_counts_ordered.values, color='b', edgecolor='black')
+        ax[0].set_title('Distribution of Predicted Classes', fontsize=18)
+        ax[0].set_ylabel('Counts', fontsize=18)
+        ax[0].tick_params(labelsize=14)
+
+        mean_probabilities.index = classes 
+        ax[1].bar(classes, mean_probabilities, yerr=std_probabilities, capsize=5, 
+                  alpha=0.7, color='g', ecolor='black')
+        ax[1].set_title('Mean Class Probabilities', fontsize=18)
+        ax[1].set_ylim(bottom=0, top=1.05)
+        ax[1].tick_params(labelsize=14)
+
+        plt.tight_layout()
+        plt.show()
+        return None
+    else:
+        return majority_class, mean_probabilities, std_probabilities
+    
+
+def rf_classify_mc_EWs(EWs, EWs_unc, clf, scaler_sv, plot=False, n_mc=100):
+    """
+    Performs Monte Carlo spectral classification using a Support Vector Machine classifier based on 
+    emission line Equivalent Widths (EWs).
+
+    Parameters
+    ----------
+    EWs : array-like of float
+            A list or array containing the measured Equivalent Widths (EWs) in the order:
+            [H-alpha, [OIII] 5007, H-beta]. These serve as the 'loc' (mean) for 
+            the Monte Carlo distributions.
+        EWs_unc : array-like of float
+            A list or array containing the 1-sigma uncertainties for the Equivalent 
+            Widths in the same order as `EWs`. These serve as the 'scale' (standard 
+            deviation) for the Monte Carlo distributions.
+        clf : object
+            A trained classifier object (e.g., sklearn.ensemble.RandomForestClassifier) 
+            that implements `predict` and `predict_proba` methods.
+        scaler_sv : object
+            A fitted scaling object (e.g., sklearn.preprocessing.StandardScaler) used 
+            to normalize the feature data before passing it to the classifier.
+        plot : bool, optional
+            If True, generates a figure showing the distribution of predicted classes 
+            and mean class probabilities. Default is False.
+        n_mc : int, optional
+            The number of Monte Carlo iterations (random samples) to perform. 
+            Higher values increase precision but increase computation time. 
+            Default is 100.
+
+    Returns
+    -------
+    str or None
+        - If `plot` is False: Returns the label of the most frequently predicted class
+          (e.g., 'SF', 'AGN', 'LINER', 'COMP', 'PAS').
+        - If `plot` is True: Displays the plot and returns None.
+
+    Notes
+    -----
+    - Assumes the classifier `clf` outputs integer labels 0-4 mapping to:
+      {0: 'SF', 1: 'AGN', 2: 'LINER', 3: 'COMP', 4: 'PAS'}.
+    - The specific lines measured are H-alpha (6566 A), [OIII] (5007 A), and H-beta (4864 A).
+    """
 
     df = pd.DataFrame()
     df['EW_NII_HA_NII_NON'] = np.random.normal(loc=EWs[0], scale=EWs_unc[0], size=n_mc)
