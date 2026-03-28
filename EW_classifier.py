@@ -87,7 +87,7 @@ def calc_eqw_mc(wavelength, flux, sigma, line_center, line_width, cont_width, mc
     
     wv_line = wavelength[line_range]
     flux_line = flux[line_range]
-    sigma_line = np.std(abs(flux_cont_tot))
+    sigma_line = sigma[line_range]
     sigma_cont = np.std(abs(flux_cont_tot))
     
     for _ in range(0, mc_iter):
